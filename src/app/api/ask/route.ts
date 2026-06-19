@@ -7,7 +7,7 @@ function buildNoAnswer(): AskResponse {
   return {
     answer: "No tengo esa información aprobada.",
     citations: [],
-    validUntil: new Date().toISOString(),
+    validUntil: null,
     noAnswer: true,
   };
 }

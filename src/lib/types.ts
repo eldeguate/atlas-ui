@@ -16,7 +16,7 @@ export interface AskRequest {
 export interface AskResponse {
   answer: string;
   citations: Citation[];
-  validUntil: string;
+  validUntil: string | null;
   noAnswer: boolean;
 }
 

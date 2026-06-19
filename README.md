@@ -18,13 +18,19 @@ Open [http://localhost:3000](http://localhost:3000).
 Client always calls `POST /api/ask`. The route proxies to R2R when configured:
 
 ```bash
-# .env.local or Vercel → Settings → Environment Variables
+# .env.local
 R2R_BASE_URL=http://127.0.0.1:7272
+R2R_USERNAME=<ingest-owner email from Codex>
+R2R_PASSWORD=<password from Codex>
 ```
+
+Auth flow: `POST /v2/login` (form) → `POST /v2/rag` with `Authorization: Bearer …`. The client auto re-logins on 401.
+
+If username/password are omitted, the adapter calls `/v2/rag` without Bearer (works on today's local R2R; use creds when auth is enforced).
 
 No change to `src/lib/config.ts` — `ATLAS_API` stays `/api/ask`.
 
-R2R response mapping lives in `src/lib/r2rAdapter.ts` (`mapR2RToAskResponse` → `{ answer, citations, validUntil, noAnswer }`).
+Contract: `docs/LANE_C_WIRING.md` in `atlas-rag`. Mapping in `src/lib/r2rAdapter.ts`.
 
 ## Mock API (default)
 

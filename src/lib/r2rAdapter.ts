@@ -35,7 +35,7 @@ function cleanTitle(raw: string): string {
   return raw.replace(/\.atlas\.md$/i, "").trim();
 }
 
-function pickValidUntil(hits: R2RVectorHit[]): string {
+function pickValidUntil(hits: R2RVectorHit[]): string | null {
   for (const hit of hits) {
     const meta = hit.metadata;
     const candidate =
@@ -44,9 +44,7 @@ function pickValidUntil(hits: R2RVectorHit[]): string {
       return candidate.trim();
     }
   }
-  const fallback = new Date();
-  fallback.setMonth(fallback.getMonth() + 6);
-  return fallback.toISOString().slice(0, 10);
+  return null;
 }
 
 function buildCitations(hits: R2RVectorHit[]): Citation[] {
