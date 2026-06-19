@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #0e2a47;
+  --navy-2: #16365b;
+  --red: #c8102e;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text: #1a2332;
+  --muted: #6b7785;
+  --line: #e2e8f0;
+  --ok: #1b9c5d;
+  --warn: #e0a100;
+  --radius-card: 12px;
+  --radius-chip: 8px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+  --color-uma-red: var(--red);
+  --color-atlas-bg: var(--bg);
+  --color-atlas-card: var(--card);
+  --color-atlas-text: var(--text);
+  --color-atlas-muted: var(--muted);
+  --color-atlas-line: var(--line);
+  --color-atlas-ok: var(--ok);
+  --color-atlas-warn: var(--warn);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+@keyframes atlas-pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.atlas-typing-dot {
+  animation: atlas-pulse 1.2s ease-in-out infinite;
+}
+
+.atlas-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.atlas-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
 }

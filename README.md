@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Atlas UI (Lane C)
 
-## Getting Started
+Spanish pilot chat UI for Grupo UMA. Ships with a mock API; point at R2R with one env var.
 
-First, run the development server:
+## Run locally
 
 ```bash
+cd ~/projects/atlas-ui
+npm install
+cp .env.example .env.local   # optional — mock works without it
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Converge on R2R (one line)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Client always calls `POST /api/ask`. The route proxies to R2R when configured:
 
-## Learn More
+```bash
+# .env.local or Vercel → Settings → Environment Variables
+R2R_BASE_URL=http://127.0.0.1:7272
+```
 
-To learn more about Next.js, take a look at the following resources:
+No change to `src/lib/config.ts` — `ATLAS_API` stays `/api/ask`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+R2R response mapping lives in `src/lib/r2rAdapter.ts` (`mapR2RToAskResponse` → `{ answer, citations, validUntil, noAnswer }`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Mock API (default)
 
-## Deploy on Vercel
+`POST /api/ask` — body: `{ query, agent, country }`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Returns `noAnswer: true` when the query contains `precio` or `inventario`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+
+Vercel-ready. Connect [github.com/eldeguate/atlas-ui](https://github.com/eldeguate/atlas-ui) and deploy with no extra config for the mock demo.
