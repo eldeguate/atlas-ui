@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isLiveDataQuery } from "@/lib/liveDataGuard";
 import { queryR2R, getR2RBaseUrl } from "@/lib/r2rClient";
 import type { Agent, AskRequest, AskResponse } from "@/lib/types";
-
-const NO_ANSWER_TRIGGERS = ["precio", "inventario"];
 
 function buildNoAnswer(): AskResponse {
   return {
@@ -53,12 +52,7 @@ async function buildMockResponse(
 ): Promise<AskResponse> {
   await new Promise((resolve) => setTimeout(resolve, 650));
 
-  const normalized = query.toLowerCase();
-  const triggered = NO_ANSWER_TRIGGERS.some((term) =>
-    normalized.includes(term),
-  );
-
-  return triggered ? buildNoAnswer() : buildSampleAnswer(agent);
+  return isLiveDataQuery(query) ? buildNoAnswer() : buildSampleAnswer(agent);
 }
 
 export async function POST(request: NextRequest) {
@@ -76,6 +70,10 @@ export async function POST(request: NextRequest) {
   }
 
   const agent: Agent = body.agent === "asesor" ? "asesor" : "vendedor";
+
+  if (isLiveDataQuery(query)) {
+    return NextResponse.json(buildNoAnswer());
+  }
 
   try {
     const response = getR2RBaseUrl()

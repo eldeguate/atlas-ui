@@ -21,6 +21,8 @@ export interface R2RVectorHit {
     title?: string;
     validUntil?: string;
     valid_until?: string;
+    effective_to?: string;
+    citation_label?: string;
     [key: string]: unknown;
   };
 }
@@ -36,7 +38,8 @@ function cleanTitle(raw: string): string {
 function pickValidUntil(hits: R2RVectorHit[]): string {
   for (const hit of hits) {
     const meta = hit.metadata;
-    const candidate = meta?.validUntil ?? meta?.valid_until;
+    const candidate =
+      meta?.validUntil ?? meta?.valid_until ?? meta?.effective_to;
     if (typeof candidate === "string" && candidate.trim()) {
       return candidate.trim();
     }
@@ -54,9 +57,14 @@ function buildCitations(hits: R2RVectorHit[]): Citation[] {
     if (seen.has(hit.document_id)) continue;
     seen.add(hit.document_id);
 
-    const title = hit.metadata?.title
-      ? cleanTitle(hit.metadata.title)
-      : `Documento ${hit.document_id.slice(0, 8)}`;
+    const rawLabel =
+      hit.metadata?.title ??
+      hit.metadata?.citation_label ??
+      hit.document_id;
+    const title =
+      typeof rawLabel === "string" && rawLabel.includes(".atlas.md")
+        ? cleanTitle(rawLabel)
+        : String(rawLabel ?? `Documento ${hit.document_id.slice(0, 8)}`);
 
     citations.push({
       label: title,
